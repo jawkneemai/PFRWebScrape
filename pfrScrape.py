@@ -6,6 +6,7 @@
 from bs4 import BeautifulSoup
 import requests
 import pprint
+import scrapeFunctions.py
 
 # Modules
 pp = pprint.PrettyPrinter(indent=4)
@@ -27,25 +28,12 @@ next_page_url = '&offset='
 isDone = 0 # Boolean for checking if end of stats table on PFR
 counter = 0
 #rush_url = rush_url + next_page_url + '200'
-try:
-	rush_page = requests.get(rush_url)
-	rush_soup = BeautifulSoup(rush_page.content, 'html.parser')
-	rush_tbody = rush_soup.find('tbody')
-	rush_tr_elements = rush_tbody.find_all('tr')
-except AttributeError:
-	print('Error creating or navigating Soup object')
 
-for tr in rush_tr_elements:
-	if tr.has_attr('class'):
-		print(tr.prettify())
-	else:
-		#print(tr.prettify())
-		counter += 1
-		print(counter)
+rush_table = getPlayerRows(rush_url)
+for tr in rush_table:
+	print(tr.prettify())
 
 while isDone == 0:
-	counter += 1
-	print(counter)
 	isDone = 1
 	#rush_page = requests.get(rush_url)
 	#rush_soup = BeautifulSoup(rush_page.content, 'html.parser')
@@ -70,6 +58,3 @@ while isDone == 0:
 #for i in pass_tr_elements:
 #	print(i, end='\n'*2)
 
-
-
-### Functions ###
