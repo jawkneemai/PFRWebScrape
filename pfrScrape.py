@@ -11,6 +11,7 @@ import scrapeFunctions
 # Modules
 pp = pprint.PrettyPrinter(indent=4)
 getPlayerRows = scrapeFunctions.getPlayerRows
+parsePlayerRow = scrapeFunctions.parsePlayerRow
 
 
 # URLs: Queries list every player that has the respective stats. 
@@ -34,9 +35,13 @@ counter = 0
 #rush_url = rush_url + next_page_url + '200'
 
 rush_table = getPlayerRows(rush_url)
+print(parsePlayerRow(rush_table[0], 0))
 
-print(parsePlayerRow(rush_table[0]))
-#print(rush_table[0].prettify())
+rec_table = getPlayerRows(rec_url)
+print(parsePlayerRow(rec_table[0], 1))
+
+pass_table = getPlayerRows(pass_url)
+print(parsePlayerRow(pass_table[0], 2))
 
 while isDone == 0:
 	isDone = 1
