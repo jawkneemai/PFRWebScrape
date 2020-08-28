@@ -6,10 +6,12 @@
 from bs4 import BeautifulSoup
 import requests
 import pprint
-import scrapeFunctions.py
+import scrapeFunctions
 
 # Modules
 pp = pprint.PrettyPrinter(indent=4)
+getPlayerRows = scrapeFunctions.getPlayerRows
+
 
 # URLs: Queries list every player that has the respective stats. 
 # Format: 100 players listed in a table element every page, click next button to get the next 100 players
@@ -17,11 +19,13 @@ rush_url = 'https://www.pro-football-reference.com/play-index/pgl_finder.cgi?req
 rec_url = 'https://www.pro-football-reference.com/play-index/pgl_finder.cgi?request=1&match=game&year_min=1970&year_max=2019&season_start=1&season_end=-1&pos%5B%5D=QB&pos%5B%5D=WR&pos%5B%5D=RB&pos%5B%5D=TE&is_starter=E&game_type=R&game_num_min=0&game_num_max=99&week_num_min=0&week_num_max=99&c5val=1.0&order_by=rec'
 pass_url = 'https://www.pro-football-reference.com/play-index/pgl_finder.cgi?request=1&match=game&year_min=1970&year_max=2019&season_start=1&season_end=-1&pos%5B%5D=QB&pos%5B%5D=WR&pos%5B%5D=RB&pos%5B%5D=TE&is_starter=E&game_type=R&game_num_min=0&game_num_max=99&week_num_min=0&week_num_max=99&c5val=1.0&order_by=pass_yds'
 
+
 # Other Variables
 next_page_url = '&offset=' 
 # Query to move to specified rank of the stat. (PFR only displays 100 players at a time)
 # Add an integer after '=' to jump to specific rank.
 # i.e.: Rushing: 41679 players with rushing attempts in any game
+
 
 # Scraping Rushing Stats of ALL Players
 
@@ -30,8 +34,9 @@ counter = 0
 #rush_url = rush_url + next_page_url + '200'
 
 rush_table = getPlayerRows(rush_url)
-for tr in rush_table:
-	print(tr.prettify())
+
+print(parsePlayerRow(rush_table[0]))
+#print(rush_table[0].prettify())
 
 while isDone == 0:
 	isDone = 1

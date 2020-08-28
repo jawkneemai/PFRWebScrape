@@ -1,3 +1,6 @@
+import requests
+from bs4 import BeautifulSoup
+
 ### Functions ###
 
 # Gets the 100 rows of player data on a search query page. 
@@ -11,12 +14,18 @@ def getPlayerRows(url):
 		print('Error creating or navigating Soup object')
 
 	for tr in rush_tr_elements:
-		print(tr.prettify())
 		if tr.has_attr('class'): # if <tr> element has 'thead' class, meaning it is a header row with no player info
 			tr.decompose()
 
 	return rush_tr_elements
 
-# Takes a BeautifulSoup tag (from getPlayerRows, should be 100 element list of player data) and writes it to .csv 
-def writePlayerRows():
+# Takes a BeautifulSoup tag (from getPlayerRow, should be 100 element list of tags) and returns an object with all player data 
+def parsePlayerRow(single_player_row):
+	player_data = {}
+	for child in single_player_row[0].children:
+		print(child.name)
+	return player_data
+
+# Takes playerData (list with all player data) and writes to specified csv file
+def writePlayerRow(player_data, csv_file):
 	return
