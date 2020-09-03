@@ -22,7 +22,7 @@ pass_url = 'https://www.pro-football-reference.com/play-index/pgl_finder.cgi?req
 
 
 # Other Variables
-next_page_url = '&offset=' 
+next_page_query = '&offset=' 
 # Query to move to specified rank of the stat. (PFR only displays 100 players at a time)
 # Add an integer after '=' to jump to specific rank.
 # i.e.: Rushing: 41679 players with rushing attempts in any game
@@ -32,39 +32,28 @@ next_page_url = '&offset='
 
 isDone = 0 # Boolean for checking if end of stats table on PFR
 counter = 0
-#rush_url = rush_url + next_page_url + '200'
 
-rush_table = getPlayerRows(rush_url)
-print(parsePlayerRow(rush_table[0], 0))
+#rush_table = getPlayerRows(rush_url)
+#print(parsePlayerRow(rush_table[0]))
 
-rec_table = getPlayerRows(rec_url)
-print(parsePlayerRow(rec_table[0], 1))
+#rec_table = getPlayerRows(rec_url)
+#print(parsePlayerRow(rec_table[0]))
 
-pass_table = getPlayerRows(pass_url)
-print(parsePlayerRow(pass_table[0], 2))
+#pass_table = getPlayerRows(pass_url)
+#print(parsePlayerRow(pass_table[0]))
+
+counter = 0
+url_multiplier = 100
 
 while isDone == 0:
-	isDone = 1
-	#rush_page = requests.get(rush_url)
-	#rush_soup = BeautifulSoup(rush_page.content, 'html.parser')
+	temp_url = pass_url + next_page_query + str(url_multiplier*counter) # modifies URL to generate next table of 100 player data
+	temp_rush_table = getPlayerRows(temp_url)
+	for row in temp_rush_table:	
+		temp_data = parsePlayerRow(row)
+		if len(temp_data['pos']) < 1:
+			temp_data['pos'] = 'QB' # Need this for all positions, for some reason older players don't have a position indicated. 
+		print(temp_data)
 
-#rush_tr_elements = rush_soup.find_all('tr')
-#for i in rush_tr_elements:
-#	print(i, end='\n'*2)
-
-
-
-
-#rec_page = requests.get(rec_url)
-#pass_page = requests.get(pass_url)
-#rec_soup = BeautifulSoup(rec_page.content, 'html.parser')
-#pass_soup = BeautifulSoup(pass_page.content, 'html.parser')
-
-#rec_tr_elements = rec_soup.find_all('tr')
-#for i in rec_tr_elements:
-#	print(i, end='\n'*2)
-
-#pass_tr_elements = pass_soup.find_all('tr')
-#for i in pass_tr_elements:
-#	print(i, end='\n'*2)
-
+	counter += 1
+	if counter > 0:
+		isDone = 1
