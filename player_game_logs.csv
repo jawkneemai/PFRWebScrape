@@ -1,0 +1,2 @@
+ranker,player,pos,age,game_date,league_id,team,game_location,opp,game_result,game_num,week_num,game_day_of_week,pass_cmp,pass_att,pass_cmp_perc,pass_yds,pass_td,pass_int,pass_rating,pass_sacked,pass_sacked_yds,pass_yds_per_att,pass_adj_yds_per_att
+100,Trent Green,QB,30.119,2000-11-05,NFL,STL,,CAR,L 24-27,9,10,Sun,29,42,69.05,431,2,0,118.3,5,36,10.26,11.21

@@ -7,11 +7,13 @@ from bs4 import BeautifulSoup
 import requests
 import pprint
 import scrapeFunctions
+import csv
 
 # Modules
 pp = pprint.PrettyPrinter(indent=4)
 getPlayerRows = scrapeFunctions.getPlayerRows
 parsePlayerRow = scrapeFunctions.parsePlayerRow
+writePlayerRow = scrapeFunctions.writePlayerRow
 
 
 # URLs: Queries list every player that has the respective stats. 
@@ -26,15 +28,15 @@ next_page_query = '&offset='
 # Query to move to specified rank of the stat. (PFR only displays 100 players at a time)
 # Add an integer after '=' to jump to specific rank.
 # i.e.: Rushing: 41679 players with rushing attempts in any game
+url_multiplier = 100
+isDone = 0 # Boolean for checking if end of stats table on PFR
 
 
 # Scraping Rushing Stats of ALL Players
-
-isDone = 0 # Boolean for checking if end of stats table on PFR
-counter = 0
-
-#rush_table = getPlayerRows(rush_url)
-#print(parsePlayerRow(rush_table[0]))
+rush_table = getPlayerRows(rush_url)
+rush_player1 = parsePlayerRow(rush_table[0])
+print(rush_player1)
+writePlayerRow(rush_player1, 'player_game_logs.csv')
 
 #rec_table = getPlayerRows(rec_url)
 #print(parsePlayerRow(rec_table[0]))
@@ -43,17 +45,16 @@ counter = 0
 #print(parsePlayerRow(pass_table[0]))
 
 counter = 0
-url_multiplier = 100
 
-while isDone == 0:
+while (counter < 1):
+	# Create URL for data of next 100 players (PFR only lists 100 players per request)
 	temp_url = pass_url + next_page_query + str(url_multiplier*counter) # modifies URL to generate next table of 100 player data
+	counter += 1
+
+	# Gather and parse player data (this is just for the 100 players)
 	temp_rush_table = getPlayerRows(temp_url)
 	for row in temp_rush_table:	
-		temp_data = parsePlayerRow(row)
-		if len(temp_data['pos']) < 1:
-			temp_data['pos'] = 'QB' # Need this for all positions, for some reason older players don't have a position indicated. 
-		print(temp_data)
-
-	counter += 1
-	if counter > 0:
-		isDone = 1
+		temp_data = parsePlayerRow(row) # temp_data is python dictionary of player data
+		if len(temp_data['pos']) < 1: # If field is empty from PFR
+			temp_data['pos'] = 'RB' # Need this for all positions, for some reason older players don't have a position indicated. 
+		writePlayerRow(temp_data, 'player_game_logs.csv')

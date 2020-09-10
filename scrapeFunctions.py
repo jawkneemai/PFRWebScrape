@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+import csv
 
 ### Functions ###
 
@@ -27,7 +28,7 @@ def parsePlayerRow(single_player_row):
 	# Iterates through child's descendants to get innermost content, aka the player stat data
 	for child in single_player_row.children:
 		temp_data = ''
-		if len(list(child.descendants)) > 0: # If a player stat has content
+		if len(list(child.descendants)) > 0: # If a player stat has any content at all
 			if len(list(child.descendants)) > 1: 
 				if len(list(child.descendants)[-1]) > 1: temp_data = list(child.descendants)[-1]
 				else: temp_data = list(child.descendants)[-2]
@@ -37,4 +38,12 @@ def parsePlayerRow(single_player_row):
 
 # Takes playerData (list with all player data) and writes to specified csv file
 def writePlayerRow(player_data, csv_file):
+	fields = []
+	for key in player_data: # Gets stat names from player_data
+		fields.append(key)
+
+	with open(csv_file, 'w', newline='') as file:
+		writer = csv.DictWriter(file, fieldnames=fields)
+		writer.writeheader()
+		writer.writerow(player_data)
 	return
