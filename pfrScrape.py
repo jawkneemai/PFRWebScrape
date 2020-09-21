@@ -31,30 +31,54 @@ next_page_query = '&offset='
 url_multiplier = 100
 isDone = 0 # Boolean for checking if end of stats table on PFR
 
+qbrows = getPlayerRows(pass_url)
+player_data = parsePlayerRows(qbrows[0])
+print(player_data)
 
-# Scraping Rushing Stats of ALL Players
-rush_table = getPlayerRows(rush_url)
-rush_player1 = parsePlayerRow(rush_table[0])
-print(rush_player1)
-writePlayerRow(rush_player1, 'player_game_logs.csv')
+# ~~ All scraping done below ~~ #
 
-#rec_table = getPlayerRows(rec_url)
-#print(parsePlayerRow(rec_table[0]))
+# Scraping Passing Stats of ALL Players
+#counter = 0
+#while (counter < 1000):
+#	# Create URL for data of next 100 players (PFR only lists 100 players per request)
+#	temp_url = pass_url + next_page_query + str(url_multiplier*counter) # modifies URL to generate next table of 100 player data
+#
+#	# Gather and parse player data (this is just for the 100 players)
+#	temp_pass_table = getPlayerRows(temp_url)
+#	for row in temp_pass_table:	
+#		temp_data = parsePlayerRow(row) # temp_data is python dictionary of player data
+#		if len(temp_data['pos']) < 1: # If field is empty from PFR
+#			temp_data['pos'] = 'QB' # Need this for all positions, for some reason older players don't have a position indicated. 
+#		writePlayerRow(temp_data, 'qb_game_logs.csv')
+#	print(temp_data)
+#	if(int(temp_data['pass_att']) < 1): break
+#	counter += 1
 
-#pass_table = getPlayerRows(pass_url)
-#print(parsePlayerRow(pass_table[0]))
 
-counter = 0
+# Scraping rushing stats of ALL players
+#counter = 0
+#while (counter < 1000):
+#	temp_url = rush_url + next_page_query + str(url_multiplier*counter)
+#	temp_rush_table = getPlayerRows(temp_url)
+#	for row in temp_rush_table:
+#		temp_data = parsePlayerRow(row)
+#		if len(temp_data['pos']) < 1:
+#			temp_data['pos'] = 'RB'
+#		writePlayerRow(temp_data, 'rb_game_logs.csv')
+#	print(temp_data)
+#	if (int(temp_data['rush_att']) < 1): break
+#	counter += 1
 
-while (counter < 1):
-	# Create URL for data of next 100 players (PFR only lists 100 players per request)
-	temp_url = pass_url + next_page_query + str(url_multiplier*counter) # modifies URL to generate next table of 100 player data
-	counter += 1
-
-	# Gather and parse player data (this is just for the 100 players)
-	temp_rush_table = getPlayerRows(temp_url)
-	for row in temp_rush_table:	
-		temp_data = parsePlayerRow(row) # temp_data is python dictionary of player data
-		if len(temp_data['pos']) < 1: # If field is empty from PFR
-			temp_data['pos'] = 'RB' # Need this for all positions, for some reason older players don't have a position indicated. 
-		writePlayerRow(temp_data, 'player_game_logs.csv')
+# Scraping receiving stats of all players
+#counter = 0
+#while (counter < 2000):
+#	temp_url = rec_url + next_page_query + str(url_multiplier*counter)
+#	temp_rec_table = getPlayerRows(temp_url)
+#	for row in temp_rec_table:
+#		temp_data = parsePlayerRow(row)
+#		if len(temp_data['pos']) < 1:
+#			temp_data['pos'] = 'WR'
+#		writePlayerRow(temp_data, 'wr_game_logs.csv')
+#	print(temp_data)
+#	if (int(temp_data['rec']) < 1): break
+#	counter += 1

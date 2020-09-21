@@ -31,19 +31,19 @@ def parsePlayerRow(single_player_row):
 		if len(list(child.descendants)) > 0: # If a player stat has any content at all
 			if len(list(child.descendants)) > 1: 
 				if len(list(child.descendants)[-1]) > 1: temp_data = list(child.descendants)[-1]
-				else: temp_data = list(child.descendants)[-2]
+				else: temp_data = list(child.descendants)[-2] # sometimes the deepest descendant is empty for whatever reason, goes to second deepest descendant
 			else: temp_data = list(child.descendants)[0]
 		player_data.update({child['data-stat']: temp_data})
 	return player_data
 
 # Takes playerData (list with all player data) and writes to specified csv file
 def writePlayerRow(player_data, csv_file):
-	fields = []
-	for key in player_data: # Gets stat names from player_data
-		fields.append(key)
+	fields = [] # can probably combine this with for loop to practice that one weird python list constructor thing
+	# Gets stat names from player_data
+	for key in player_data: fields.append(key)
 
-	with open(csv_file, 'w', newline='') as file:
+	with open(csv_file, 'a', newline='') as file:
 		writer = csv.DictWriter(file, fieldnames=fields)
-		writer.writeheader()
+		#writer.writeheader()
 		writer.writerow(player_data)
 	return
