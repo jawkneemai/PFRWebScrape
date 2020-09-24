@@ -42,8 +42,8 @@ def writePlayerRow(player_data, csv_file):
 	# Gets stat names from player_data
 	for key in player_data: fields.append(key)
 
+	# Writes to CSV, with field names
 	with open(csv_file, 'a', newline='') as file:
 		writer = csv.DictWriter(file, fieldnames=fields)
-		#writer.writeheader()
 		writer.writerow(player_data)
 	return
