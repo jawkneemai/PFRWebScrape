@@ -33,7 +33,7 @@ def parsePlayerRow(single_player_row):
 				if len(list(child.descendants)[-1]) > 1: temp_data = list(child.descendants)[-1]
 				else: temp_data = list(child.descendants)[-2] # sometimes the deepest descendant is empty for whatever reason, goes to second deepest descendant
 			else: temp_data = list(child.descendants)[0]
-		player_data.update({child['data-stat']: temp_data})
+		player_data.add({child['data-stat']: temp_data})
 	return player_data
 
 # Takes playerData (list with all player data) and writes to specified csv file
