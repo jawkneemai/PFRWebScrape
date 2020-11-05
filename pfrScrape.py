@@ -101,12 +101,13 @@ rush_ind_ult_start = 30
 rush_ind_ult_end = 34
 rush_ind_row_start = 13
 rush_ind_row_end = 17
-ultimate_game_log = {'fieldnames': ['player', 'pos', 'age', 'game_date', 'league_id', 
+fieldnames = {'fieldnames': ['player', 'pos', 'age', 'game_date', 'league_id', 
 'team', 'game_location', 'opp', 'game_result', 'game_num', 'week_num', 'game_day_of_week', 
 'pass_cmp', 'pass_att', 'pass_cmp_perc', 'pass_yds', 'pass_td', 'pass_int', 'pass_rating', 
 'pass_sacked', 'pass_sacked_yds', 'pass_yds_per_att', 'pass_adj_yds_per_att', 'targets', 
 'rec', 'rec_yds', 'rec_yds_per_rec', 'rec_td', 'catch_pct', 'rec_yds_per_tgt', 'rush_att', 
 'rush_yds', 'rush_yds_per_att', 'rush_td']} 
+ultimate_game_log = {}
 # going to be the ultimate game log with all players' game logs. dict keys will be player names, 
 # with value pairs of game log dates, which are dicts themselves. their value pair is a list
 # that contains whatever stats they may have for that game log date (stats listed above as 'fieldnames')
@@ -176,17 +177,14 @@ with open(rush_file, newline='') as file:
 			ultimate_game_log[temp_name][temp_game_date] = row[1:]
 			# generate empty row and fill in whatever indices rush stats are
 
-			
-
-asdf = 0
-for key in ultimate_game_log:
-	asdf = asdf + len(ultimate_game_log[key])
-
-pp.pprint(len(ultimate_game_log))
-pp.pprint(ultimate_game_log['Marcus Mariota'])
-pp.pprint(ultimate_game_log['Adrian Peterson'])
-pp.pprint(ultimate_game_log['Cooper Kupp'])
+#pp.pprint(len(ultimate_game_log))
+#pp.pprint(ultimate_game_log['Marcus Mariota'])
+#pp.pprint(ultimate_game_log['Adrian Peterson'])
+#pp.pprint(ultimate_game_log['Cooper Kupp'])
 
 # Write ultimate game log into one csv file. 
-#for row in ultimate_game_log:
-#	fieldnames = ultimate_game_log['fieldnames']
+for player in ultimate_game_log:
+	for game in ultimate_game_log[player]:
+		with open('ultimate_game_log.csv', 'a', newline='') as file:
+			writer = csv.writer(file, delimiter=',')
+			writer.writerow(ultimate_game_log[player][game]
