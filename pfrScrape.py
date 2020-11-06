@@ -101,6 +101,8 @@ rush_ind_ult_start = 30
 rush_ind_ult_end = 34
 rush_ind_row_start = 13
 rush_ind_row_end = 17
+
+header_ind_end = 13
 fieldnames = {'fieldnames': ['player', 'pos', 'age', 'game_date', 'league_id', 
 'team', 'game_location', 'opp', 'game_result', 'game_num', 'week_num', 'game_day_of_week', 
 'pass_cmp', 'pass_att', 'pass_cmp_perc', 'pass_yds', 'pass_td', 'pass_int', 'pass_rating', 
@@ -117,17 +119,17 @@ with open(pass_file, newline='') as file:
 	for row in reader:
 		temp_name = row[1]
 		temp_game_date = row[4]
-		empty_row = [0 for x in range(34)]
+		temp_row = ['' for x in range(34)]
 
 		# First create a dictionary for the player to store all the game log dates as values,
 		# then adds game log dates as dictionaries as we go. 
 		if temp_name in ultimate_game_log: # If player already exists in the dict, just add a new game date entry.
-			ultimate_game_log[temp_name][temp_game_date] = empty_row
-			ultimate_game_log[temp_name][temp_game_date][:23] = row[1:]
+			temp_row[:(rec_ind_ult_start)] = row[1:]
+			ultimate_game_log[temp_name][temp_game_date] = temp_row
 		else: # If player doesn't exist yet, create an key for them.
 			ultimate_game_log[temp_name] = {}
-			ultimate_game_log[temp_name][temp_game_date] = empty_row
-			ultimate_game_log[temp_name][temp_game_date][:23] = row[1:]
+			temp_row[:(rec_ind_ult_start)] = row[1:]
+			ultimate_game_log[temp_name][temp_game_date] = temp_row
 
 # 'targets' at index 23 in fieldnames, index 13 in row
 # 'rec_yds_per_tgt' at index 29 in fieldnames, index 19 in row
@@ -136,22 +138,24 @@ with open(rec_file, newline='') as file:
 	for row in reader:
 		temp_name = row[1]
 		temp_game_date = row[4]
-		temp_row = row[rec_ind_row_start:rec_ind_row_end]
-		empty_row = [0 for x in range(34)]
+		temp_row = ['' for x in range(34)]
 
-		if temp_name in ultimate_game_log: # If player already exists in ultimate_game_log from the passing stats
-			if temp_game_date in ultimate_game_log[temp_name]: # If player already has a game log on that date inthe ultimate_game_log
-				ultimate_game_log[temp_name][temp_game_date][rec_ind_ult_start:rec_ind_ult_end] = temp_row
-				# append rec row to whatever indices they are
-			else: # If a player exists but doesn't have a game log already in ultimate_game_log
-				ultimate_game_log[temp_name][temp_game_date] = empty_row
-				ultimate_game_log[temp_name][temp_game_date] = row[1:]
-				# generate empty row and fill in whatever indices rec stats are
-		else: # If player doesn't exist in ultimate_game_log, aka doesn't have any pass stats
+		if temp_name in ultimate_game_log:
+			if temp_game_date in ultimate_game_log[temp_name]:
+				# append rec data to whatever indices they are, since they're already in the database
+				temp_row[rec_ind_ult_start:rec_ind_ult_end] = row[rec_ind_row_start:rec_ind_row_end]
+				ultimate_game_log[temp_name][temp_game_date][rec_ind_ult_start:rec_ind_ult_end] = temp_row[rec_ind_ult_start:rec_ind_ult_end]
+			else: 
+				# generate empty row and fill in whatever indices rush stats are
+				temp_row[:(header_ind_end-1)] = row[1:header_ind_end]
+				temp_row[rec_ind_ult_start:rec_ind_ult_end] = row[rec_ind_row_start:rec_ind_row_end]
+				ultimate_game_log[temp_name][temp_game_date] = temp_row
+		else: # If player doesn't exist in ultimate_game_log, aka doesn't have any pass OR rush stats
 			ultimate_game_log[temp_name] = {}
-			ultimate_game_log[temp_name][temp_game_date] = empty_row
-			ultimate_game_log[temp_name][temp_game_date] = row[1:]
-			# generate empty row and fill in whatever indices rec stats are
+			temp_row[:(header_ind_end-1)] = row[1:header_ind_end]
+			temp_row[rec_ind_ult_start:rec_ind_ult_end] = row[rec_ind_row_start:rec_ind_row_end]
+			ultimate_game_log[temp_name][temp_game_date] = temp_row
+			# generate empty row and fill in whatever indices rush stats are
 
 # 'rush_att' at index 30 in fieldnames, index 13 in row
 # 'rush_td' at index 33 in fieldnames, index 16 in row
@@ -160,21 +164,23 @@ with open(rush_file, newline='') as file:
 	for row in reader:
 		temp_name = row[1]
 		temp_game_date = row[4]
-		temp_row = row[rush_ind_row_start:rush_ind_row_end]
-		empty_row = [0 for x in range(34)]
+		temp_row = ['' for x in range(34)]
 
 		if temp_name in ultimate_game_log:
 			if temp_game_date in ultimate_game_log[temp_name]:
-				ultimate_game_log[temp_name][temp_game_date][rush_ind_ult_start:rush_ind_ult_end] = temp_row
-				# append rush row to whatever indices they are
+				# append rush row to whatever indices they are, since they're already in the database
+				temp_row[rush_ind_ult_start:rush_ind_ult_end] = row[rush_ind_row_start:rush_ind_row_end]
+				ultimate_game_log[temp_name][temp_game_date][rush_ind_ult_start:rush_ind_ult_end] = temp_row[rush_ind_ult_start:rush_ind_ult_end]
 			else:
-				ultimate_game_log[temp_name][temp_game_date] = empty_row
-				ultimate_game_log[temp_name][temp_game_date] = row[1:]
 				# generate empty row and fill in whatever indices rush stats are
+				temp_row[:(header_ind_end-1)] = row[1:header_ind_end]
+				temp_row[rush_ind_ult_start:rush_ind_ult_end] = row[rush_ind_row_start:rush_ind_row_end]
+				ultimate_game_log[temp_name][temp_game_date] = temp_row
 		else: # If player doesn't exist in ultimate_game_log, aka doesn't have any pass OR rush stats
 			ultimate_game_log[temp_name] = {}
-			ultimate_game_log[temp_name][temp_game_date] = empty_row
-			ultimate_game_log[temp_name][temp_game_date] = row[1:]
+			temp_row[:(header_ind_end-1)] = row[1:header_ind_end]
+			temp_row[rush_ind_ult_start:rush_ind_ult_end] = row[rush_ind_row_start:rush_ind_row_end]
+			ultimate_game_log[temp_name][temp_game_date] = temp_row
 			# generate empty row and fill in whatever indices rush stats are
 
 #pp.pprint(len(ultimate_game_log))
@@ -187,4 +193,4 @@ for player in ultimate_game_log:
 	for game in ultimate_game_log[player]:
 		with open('ultimate_game_log.csv', 'a', newline='') as file:
 			writer = csv.writer(file, delimiter=',')
-			writer.writerow(ultimate_game_log[player][game]
+			writer.writerow(ultimate_game_log[player][game])
